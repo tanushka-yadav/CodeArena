@@ -1,7 +1,8 @@
 package com.codearena.constants;
-
+/**
+ * Shared application constants.
+ */
 public final class AppConstants {
-
 
     public static final String APP_NAME = ApplicationConstants.APP_NAME;
     public static final String APP_VERSION = ApplicationConstants.APP_VERSION;

@@ -1,12 +1,17 @@
-# Changelog
-
-All notable changes to CodeArena will be documented in this file.
-
-## [0.1.0] - 2026-08-01
+## Version 0.2.0 - Candidate Registration Module
 
 ### Added
+- Professional Candidate Registration UI
+- Registration Controller
+- Registration Service
+- Registration Validation
+- Candidate Model
+- Utility Classes
+- Reusable Swing Components
+- Input Validation
+- Navigation Support
 
-- Maven Java 21 project foundation.
-- MVC package structure.
-- Runnable Java Swing welcome window.
-- GitHub-ready README, MIT license, contribution guide, changelog, and gitignore.
+### Fixed
+- Fixed DateTimeUtil formatter initialization.
+- Fixed startup runtime exception.
+- Improved date formatting and utility methods.

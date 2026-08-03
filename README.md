@@ -12,26 +12,30 @@ CodeArena is a professional Java Swing desktop application for managing coding t
 
 ## Current Version
 
-`0.1.0-SNAPSHOT`
+`0.2.0-SNAPSHOT`
 
 ## Folder Structure
 
 ```text
 src/main/java/com/codearena
-├── CodeArenaApplication.java
-├── config
-├── constants
-├── controller
-├── database
-├── enums
-├── exception
-├── interfaces
-├── model
-├── repository
-├── service
-├── util
-├── validator
-└── view
+|-- CodeArenaApplication.java
+|-- config
+|-- constants
+|-- controller
+|-- database
+|-- dto
+|-- enums
+|-- exception
+|-- interfaces
+|-- model
+|-- repository
+|-- service
+|   `-- impl
+|-- util
+|-- validator
+`-- view
+    |-- components
+    `-- registration
 ```
 
 ## Run
@@ -42,6 +46,11 @@ mvn exec:java
 ```
 
 The first milestone can also be compiled directly with `javac` when Maven is not installed.
+
+```bash
+javac -d target/classes $(find src/main/java -name "*.java")
+java -Djava.awt.headless=true -cp target/classes com.codearena.CodeArenaApplication --smoke-test
+```
 
 ## Screenshots
 
@@ -60,3 +69,15 @@ Screenshots will be added as features are implemented.
 - MySQL persistence
 - Logging and JUnit tests
 
+## Features
+
+### Candidate Registration
+
+- Professional Swing registration form.
+- Full-name, username, email, mobile number, password, gender, and date-of-birth validation.
+- Reset and back navigation actions.
+- In-memory repository boundary prepared for future JDBC persistence.
+
+## License
+
+This project is licensed under the MIT License.

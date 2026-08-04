@@ -49,4 +49,8 @@ public class SessionManager {
     public String getSessionId() {
         return sessionId == null ? "No active session" : sessionId;
     }
+
+    public boolean isExpired() {
+        return false;
+    }
 }

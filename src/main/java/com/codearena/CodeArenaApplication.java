@@ -184,6 +184,20 @@ public final class CodeArenaApplication {
         if (!response.isSuccessful()) {
             throw new ApplicationStartupException("Registration smoke test failed: " + response.getErrors());
         }
+        RegistrationResponse duplicateResponse = registrationService.registerCandidate(new RegistrationRequest(
+                "Smoke Test User",
+                "smoke_user",
+                "smoke.user@example.com",
+                "+15551234567",
+                "SmokePass1!".toCharArray(),
+                "SmokePass1!".toCharArray(),
+                Gender.OTHER,
+                "2000-01-01",
+                LocalDate.of(2000, 1, 1)
+        ));
+        if (duplicateResponse.isSuccessful()) {
+            throw new ApplicationStartupException("Duplicate registration smoke test failed.");
+        }
         AuthenticationResult authenticationResult = authenticationService.authenticate(new LoginRequest(
                 "smoke.user@example.com",
                 "SmokePass1!".toCharArray(),
@@ -194,6 +208,19 @@ public final class CodeArenaApplication {
         }
         if (dashboardService.loadDashboardSummary().getCandidateName().isBlank()) {
             throw new ApplicationStartupException("Dashboard smoke test failed: candidate name is missing.");
+        }
+        sessionManager.logout();
+        if (sessionManager.isAuthenticated()) {
+            throw new ApplicationStartupException("Logout smoke test failed.");
+        }
+        AuthenticationResult usernameAuthenticationResult = authenticationService.authenticate(new LoginRequest(
+                "smoke_user",
+                "SmokePass1!".toCharArray(),
+                false
+        ));
+        if (!usernameAuthenticationResult.isAuthenticated() || !sessionManager.isAuthenticated()) {
+            throw new ApplicationStartupException("Username login smoke test failed: "
+                    + usernameAuthenticationResult.getErrors());
         }
         System.out.println("CodeArena smoke test completed successfully.");
     }

@@ -1,4 +1,5 @@
 package com.codearena.controller;
+
 import com.codearena.dto.RegistrationResponse;
 import com.codearena.service.RegistrationService;
 import com.codearena.util.DialogUtils;
@@ -30,16 +31,20 @@ public class RegistrationController {
     }
 
     private void registerCandidate() {
+        registrationPanel.setRegistrationInProgress(true);
         try {
             RegistrationResponse response = registrationService.registerCandidate(registrationPanel.getRegistrationRequest());
             if (response.isSuccessful()) {
                 DialogUtils.showSuccess(registrationPanel, response.getMessage());
                 registrationPanel.clearForm();
+                navigationController.showLogin();
             } else {
                 DialogUtils.showValidationErrors(registrationPanel, response.getErrors());
             }
         } catch (RuntimeException exception) {
             DialogUtils.showError(registrationPanel, "Registration failed due to a system error. Please try again.");
+        } finally {
+            registrationPanel.setRegistrationInProgress(false);
         }
     }
 }

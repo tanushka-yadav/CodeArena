@@ -2,6 +2,15 @@
 
 All notable changes to CodeArena will be documented in this file.
 
+## [0.5.0] - 2026-08-04
+
+### Added
+
+- Working in-memory candidate registration to login to dashboard flow.
+- Automatic navigation from successful registration to candidate login.
+- Registration processing state to prevent duplicate submit clicks.
+- Smoke-test coverage for duplicate registration, email login, username login, dashboard summary, and logout.
+
 ## [0.4.0] - 2026-08-03
 
 ### Added

@@ -87,6 +87,13 @@ public class RegistrationPanel extends JPanel {
         fullNameField.requestFocusInWindow();
     }
 
+    public void setRegistrationInProgress(boolean inProgress) {
+        registerButton.setEnabled(!inProgress);
+        resetButton.setEnabled(!inProgress);
+        backButton.setEnabled(!inProgress);
+        registerButton.setText(inProgress ? "Registering..." : "Register");
+    }
+
     public void onRegister(ActionListener actionListener) {
         registerButton.addActionListener(actionListener);
         passwordField.addActionListener(actionListener);

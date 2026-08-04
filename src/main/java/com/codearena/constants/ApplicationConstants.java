@@ -10,7 +10,7 @@ import java.awt.Font;
 public final class ApplicationConstants {
 
     public static final String APP_NAME = "CodeArena - Coding Test Platform";
-    public static final String APP_VERSION = "0.2.0";
+    public static final String APP_VERSION = "0.4.0";
     public static final int WINDOW_WIDTH = 1100;
     public static final int WINDOW_HEIGHT = 720;
 

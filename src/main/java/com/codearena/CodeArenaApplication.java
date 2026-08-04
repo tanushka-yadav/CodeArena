@@ -2,6 +2,7 @@ package com.codearena;
 
 import com.codearena.controller.AppController;
 import com.codearena.controller.AuthenticationController;
+import com.codearena.controller.DashboardController;
 import com.codearena.controller.NavigationController;
 import com.codearena.controller.RegistrationController;
 import com.codearena.dto.AuthenticationResult;
@@ -15,15 +16,18 @@ import com.codearena.model.AppInfo;
 import com.codearena.repository.CandidateRepository;
 import com.codearena.service.ApplicationService;
 import com.codearena.service.AuthenticationService;
+import com.codearena.service.DashboardService;
 import com.codearena.service.RegistrationService;
 import com.codearena.service.SessionManager;
 import com.codearena.service.impl.AuthenticationServiceImpl;
+import com.codearena.service.impl.DashboardServiceImpl;
 import com.codearena.service.impl.RegistrationServiceImpl;
 import com.codearena.util.Pbkdf2PasswordEncoder;
 import com.codearena.validator.CredentialValidator;
 import com.codearena.validator.RegistrationValidator;
 import com.codearena.view.MainFrame;
 import com.codearena.view.authentication.LoginFrame;
+import com.codearena.view.dashboard.DashboardPanel;
 import com.codearena.view.registration.RegistrationFrame;
 
 import java.awt.GraphicsEnvironment;
@@ -75,6 +79,7 @@ public final class CodeArenaApplication {
         MainFrame mainFrame = new MainFrame();
         LoginFrame loginFrame = new LoginFrame();
         RegistrationFrame registrationFrame = new RegistrationFrame();
+        DashboardPanel dashboardPanel = new DashboardPanel();
         NavigationController navigationController = new NavigationController(mainFrame, loginFrame, registrationFrame);
         CandidateRepository candidateRepository = new CandidateRepository();
         PasswordEncoder passwordEncoder = new Pbkdf2PasswordEncoder();
@@ -85,9 +90,17 @@ public final class CodeArenaApplication {
                 passwordEncoder,
                 sessionManager
         );
+        DashboardService dashboardService = new DashboardServiceImpl(sessionManager);
 
         createRegistrationController(registrationService, registrationFrame, navigationController);
-        createAuthenticationController(authenticationService, loginFrame, navigationController);
+        DashboardController dashboardController = createDashboardController(
+                dashboardService,
+                sessionManager,
+                dashboardPanel,
+                navigationController
+        );
+        createAuthenticationController(authenticationService, loginFrame, navigationController, dashboardController);
+        navigationController.setDashboardPanel(dashboardPanel);
         return new AppController(applicationService, mainFrame, navigationController);
     }
 
@@ -120,12 +133,22 @@ public final class CodeArenaApplication {
 
     private static AuthenticationController createAuthenticationController(AuthenticationService authenticationService,
                                                                            LoginFrame loginFrame,
-                                                                           NavigationController navigationController) {
-        return new AuthenticationController(
+                                                                           NavigationController navigationController,
+                                                                           DashboardController dashboardController) {
+        AuthenticationController authenticationController = new AuthenticationController(
                 authenticationService,
                 loginFrame.getLoginPanel(),
                 navigationController
         );
+        authenticationController.setDashboardController(dashboardController);
+        return authenticationController;
+    }
+
+    private static DashboardController createDashboardController(DashboardService dashboardService,
+                                                                 SessionManager sessionManager,
+                                                                 DashboardPanel dashboardPanel,
+                                                                 NavigationController navigationController) {
+        return new DashboardController(dashboardService, sessionManager, dashboardPanel, navigationController);
     }
 
     private static void runSmokeTest() {
@@ -145,6 +168,7 @@ public final class CodeArenaApplication {
                 passwordEncoder,
                 sessionManager
         );
+        DashboardService dashboardService = new DashboardServiceImpl(sessionManager);
         RegistrationRequest request = new RegistrationRequest(
                 "Smoke Test User",
                 "smoke_user",
@@ -167,6 +191,9 @@ public final class CodeArenaApplication {
         ));
         if (!authenticationResult.isAuthenticated() || !sessionManager.isAuthenticated()) {
             throw new ApplicationStartupException("Authentication smoke test failed: " + authenticationResult.getErrors());
+        }
+        if (dashboardService.loadDashboardSummary().getCandidateName().isBlank()) {
+            throw new ApplicationStartupException("Dashboard smoke test failed: candidate name is missing.");
         }
         System.out.println("CodeArena smoke test completed successfully.");
     }

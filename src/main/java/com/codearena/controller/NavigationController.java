@@ -1,11 +1,11 @@
 package com.codearena.controller;
 
-import com.codearena.view.MainFrame;
-import com.codearena.model.Candidate;
 import com.codearena.view.authentication.LoginFrame;
+import com.codearena.view.MainFrame;
+import com.codearena.view.dashboard.DashboardPanel;
+import com.codearena.view.dashboard.PlaceholderFrame;
 import com.codearena.view.registration.RegistrationFrame;
 
-import javax.swing.JOptionPane;
 import java.util.Objects;
 
 /**
@@ -16,11 +16,16 @@ public class NavigationController {
     private final MainFrame mainFrame;
     private final LoginFrame loginFrame;
     private final RegistrationFrame registrationFrame;
+    private DashboardPanel dashboardPanel;
 
     public NavigationController(MainFrame mainFrame, LoginFrame loginFrame, RegistrationFrame registrationFrame) {
         this.mainFrame = Objects.requireNonNull(mainFrame, "mainFrame is required");
         this.loginFrame = Objects.requireNonNull(loginFrame, "loginFrame is required");
         this.registrationFrame = Objects.requireNonNull(registrationFrame, "registrationFrame is required");
+    }
+
+    public void setDashboardPanel(DashboardPanel dashboardPanel) {
+        this.dashboardPanel = Objects.requireNonNull(dashboardPanel, "dashboardPanel is required");
     }
 
     /**
@@ -66,18 +71,29 @@ public class NavigationController {
     }
 
     /**
-     * Displays the candidate dashboard placeholder until the dashboard module is built.
+     * Displays the candidate dashboard inside the main application shell.
      */
-    public void showCandidateDashboard(Candidate candidate) {
+    public void showDashboard(DashboardPanel dashboardPanel) {
+        this.dashboardPanel = Objects.requireNonNull(dashboardPanel, "dashboardPanel is required");
         loginFrame.setVisible(false);
         registrationFrame.setVisible(false);
+        mainFrame.showScreen(dashboardPanel);
         mainFrame.setVisible(true);
-        JOptionPane.showMessageDialog(
-                mainFrame,
-                "Welcome, " + candidate.getProfile().getFullName() + ". Candidate dashboard will be built in a future step.",
-                "Candidate Dashboard",
-                JOptionPane.INFORMATION_MESSAGE
-        );
+        mainFrame.toFront();
+        mainFrame.requestFocus();
+    }
+
+    public void showDashboard() {
+        if (dashboardPanel == null) {
+            throw new IllegalStateException("Dashboard panel has not been configured.");
+        }
+        showDashboard(dashboardPanel);
+    }
+
+    public void showPlaceholder(String title, String message) {
+        PlaceholderFrame placeholderFrame = new PlaceholderFrame(title, message);
+        placeholderFrame.setLocationRelativeTo(mainFrame);
+        placeholderFrame.setVisible(true);
     }
 
     public MainFrame getMainFrame() {

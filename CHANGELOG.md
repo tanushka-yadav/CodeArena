@@ -2,6 +2,14 @@
 
 All notable changes to CodeArena will be documented in this file.
 
+## [0.4.0] - 2026-08-03
+
+### Added
+
+- Candidate dashboard module with welcome banner, status section, quick action cards, and logout flow.
+- Dashboard service and controller wired to the existing session manager.
+- Professional placeholder windows for coding test, results, leaderboard, profile, settings, and help modules.
+
 ## [0.3.0] - 2026-08-03
 
 ### Added

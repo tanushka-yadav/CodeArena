@@ -28,6 +28,7 @@ public class AppController {
                 .orElseThrow(() -> new ApplicationStartupException("Unable to load CodeArena application metadata."));
 
         mainFrame.render(appInfo);
+        mainFrame.onOpenLogin(event -> navigationController.showLogin());
         mainFrame.onOpenRegistration(event -> navigationController.showRegistration());
         mainFrame.setVisible(true);
     }

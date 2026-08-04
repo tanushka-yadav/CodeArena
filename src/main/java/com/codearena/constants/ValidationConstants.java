@@ -3,13 +3,14 @@ package com.codearena.constants;
 /**
  * Central validation rules used by the registration module.
  */
-
 public final class ValidationConstants {
 
     public static final int MIN_NAME_LENGTH = 3;
     public static final int MIN_USERNAME_LENGTH = 4;
     public static final int MAX_USERNAME_LENGTH = 20;
     public static final int MIN_PASSWORD_LENGTH = 8;
+    public static final int MAX_PASSWORD_LENGTH = 72;
+    public static final int MAX_LOGIN_IDENTIFIER_LENGTH = 100;
     public static final int MIN_CANDIDATE_AGE = 16;
 
     public static final String NAME_PATTERN = "^[A-Za-z][A-Za-z .'-]{2,}$";
@@ -19,5 +20,4 @@ public final class ValidationConstants {
 
     private ValidationConstants() {
     }
-
 }

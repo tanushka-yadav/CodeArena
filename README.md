@@ -12,7 +12,7 @@ CodeArena is a professional Java Swing desktop application for managing coding t
 
 ## Current Version
 
-`0.2.0-SNAPSHOT`
+`0.3.0-SNAPSHOT`
 
 ## Folder Structure
 
@@ -34,6 +34,7 @@ src/main/java/com/codearena
 |-- util
 |-- validator
 `-- view
+    |-- authentication
     |-- components
     `-- registration
 ```
@@ -77,6 +78,12 @@ Screenshots will be added as features are implemented.
 - Full-name, username, email, mobile number, password, gender, and date-of-birth validation.
 - Reset and back navigation actions.
 - In-memory repository boundary prepared for future JDBC persistence.
+
+### Candidate Login
+
+- Professional Swing login form with username/email and password validation.
+- Shared PBKDF2 password encoder behind a replaceable `PasswordEncoder` interface.
+- Authentication service, session placeholder, remember-me placeholder, forgot-password placeholder, and dashboard placeholder.
 
 ## License
 

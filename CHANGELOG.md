@@ -1,17 +1,29 @@
-## Version 0.2.0 - Candidate Registration Module
+# Changelog
+
+All notable changes to CodeArena will be documented in this file.
+
+## [0.3.0] - 2026-08-03
 
 ### Added
-- Professional Candidate Registration UI
-- Registration Controller
-- Registration Service
-- Registration Validation
-- Candidate Model
-- Utility Classes
-- Reusable Swing Components
-- Input Validation
-- Navigation Support
 
-### Fixed
-- Fixed DateTimeUtil formatter initialization.
-- Fixed startup runtime exception.
-- Improved date formatting and utility methods.
+- Candidate login module with Swing login window, controller, credential validator, authentication service, and session placeholder.
+- Shared password encoder interface with PBKDF2 implementation for registration and login.
+- Candidate repository lookup by username or email.
+- Login navigation from the startup screen with register, forgot-password, back, and dashboard-placeholder flows.
+
+## [0.2.0] - 2026-08-01
+
+### Added
+
+- Candidate registration module with Swing form, validation, controller, service, and repository layers.
+- Reusable rounded Swing controls and shared header/footer components.
+- Registration DTOs, candidate models, gender enum, validation constants, and utility classes.
+
+## [0.1.0] - 2026-08-01
+
+### Added
+
+- Maven Java 21 project foundation.
+- MVC package structure.
+- Runnable Java Swing welcome window.
+- GitHub-ready README, MIT license, contribution guide, changelog, and gitignore.

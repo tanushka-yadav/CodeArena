@@ -1,20 +1,29 @@
 package com.codearena;
 
-
 import com.codearena.controller.AppController;
+import com.codearena.controller.AuthenticationController;
 import com.codearena.controller.NavigationController;
 import com.codearena.controller.RegistrationController;
+import com.codearena.dto.AuthenticationResult;
+import com.codearena.dto.LoginRequest;
 import com.codearena.dto.RegistrationRequest;
 import com.codearena.dto.RegistrationResponse;
 import com.codearena.enums.Gender;
 import com.codearena.exception.ApplicationStartupException;
+import com.codearena.interfaces.PasswordEncoder;
 import com.codearena.model.AppInfo;
 import com.codearena.repository.CandidateRepository;
 import com.codearena.service.ApplicationService;
+import com.codearena.service.AuthenticationService;
 import com.codearena.service.RegistrationService;
+import com.codearena.service.SessionManager;
+import com.codearena.service.impl.AuthenticationServiceImpl;
 import com.codearena.service.impl.RegistrationServiceImpl;
+import com.codearena.util.Pbkdf2PasswordEncoder;
+import com.codearena.validator.CredentialValidator;
 import com.codearena.validator.RegistrationValidator;
 import com.codearena.view.MainFrame;
+import com.codearena.view.authentication.LoginFrame;
 import com.codearena.view.registration.RegistrationFrame;
 
 import java.awt.GraphicsEnvironment;
@@ -64,18 +73,39 @@ public final class CodeArenaApplication {
     private static AppController createApplicationController() {
         ApplicationService applicationService = new ApplicationService();
         MainFrame mainFrame = new MainFrame();
+        LoginFrame loginFrame = new LoginFrame();
         RegistrationFrame registrationFrame = new RegistrationFrame();
-        NavigationController navigationController = new NavigationController(mainFrame, registrationFrame);
-        RegistrationService registrationService = createRegistrationService();
+        NavigationController navigationController = new NavigationController(mainFrame, loginFrame, registrationFrame);
+        CandidateRepository candidateRepository = new CandidateRepository();
+        PasswordEncoder passwordEncoder = new Pbkdf2PasswordEncoder();
+        SessionManager sessionManager = new SessionManager();
+        RegistrationService registrationService = createRegistrationService(candidateRepository, passwordEncoder);
+        AuthenticationService authenticationService = createAuthenticationService(
+                candidateRepository,
+                passwordEncoder,
+                sessionManager
+        );
 
         createRegistrationController(registrationService, registrationFrame, navigationController);
+        createAuthenticationController(authenticationService, loginFrame, navigationController);
         return new AppController(applicationService, mainFrame, navigationController);
     }
 
-    private static RegistrationService createRegistrationService() {
-        CandidateRepository candidateRepository = new CandidateRepository();
+    private static RegistrationService createRegistrationService(CandidateRepository candidateRepository,
+                                                                 PasswordEncoder passwordEncoder) {
         RegistrationValidator registrationValidator = new RegistrationValidator();
-        return new RegistrationServiceImpl(candidateRepository, registrationValidator);
+        return new RegistrationServiceImpl(candidateRepository, registrationValidator, passwordEncoder);
+    }
+
+    private static AuthenticationService createAuthenticationService(CandidateRepository candidateRepository,
+                                                                     PasswordEncoder passwordEncoder,
+                                                                     SessionManager sessionManager) {
+        return new AuthenticationServiceImpl(
+                candidateRepository,
+                new CredentialValidator(),
+                passwordEncoder,
+                sessionManager
+        );
     }
 
     private static RegistrationController createRegistrationController(RegistrationService registrationService,
@@ -88,6 +118,16 @@ public final class CodeArenaApplication {
         );
     }
 
+    private static AuthenticationController createAuthenticationController(AuthenticationService authenticationService,
+                                                                           LoginFrame loginFrame,
+                                                                           NavigationController navigationController) {
+        return new AuthenticationController(
+                authenticationService,
+                loginFrame.getLoginPanel(),
+                navigationController
+        );
+    }
+
     private static void runSmokeTest() {
         ApplicationService applicationService = new ApplicationService();
         AppInfo appInfo = applicationService.loadApplicationInfo()
@@ -96,7 +136,15 @@ public final class CodeArenaApplication {
             throw new ApplicationStartupException("CodeArena application metadata is incomplete.");
         }
 
-        RegistrationService registrationService = createRegistrationService();
+        CandidateRepository candidateRepository = new CandidateRepository();
+        PasswordEncoder passwordEncoder = new Pbkdf2PasswordEncoder();
+        SessionManager sessionManager = new SessionManager();
+        RegistrationService registrationService = createRegistrationService(candidateRepository, passwordEncoder);
+        AuthenticationService authenticationService = createAuthenticationService(
+                candidateRepository,
+                passwordEncoder,
+                sessionManager
+        );
         RegistrationRequest request = new RegistrationRequest(
                 "Smoke Test User",
                 "smoke_user",
@@ -111,6 +159,14 @@ public final class CodeArenaApplication {
         RegistrationResponse response = registrationService.registerCandidate(request);
         if (!response.isSuccessful()) {
             throw new ApplicationStartupException("Registration smoke test failed: " + response.getErrors());
+        }
+        AuthenticationResult authenticationResult = authenticationService.authenticate(new LoginRequest(
+                "smoke.user@example.com",
+                "SmokePass1!".toCharArray(),
+                false
+        ));
+        if (!authenticationResult.isAuthenticated() || !sessionManager.isAuthenticated()) {
+            throw new ApplicationStartupException("Authentication smoke test failed: " + authenticationResult.getErrors());
         }
         System.out.println("CodeArena smoke test completed successfully.");
     }

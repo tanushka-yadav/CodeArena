@@ -26,6 +26,7 @@ public class MainFrame extends JFrame {
     private final JLabel titleLabel;
     private final JLabel subtitleLabel;
     private final JLabel versionLabel;
+    private final JButton loginButton;
     private final JButton registrationButton;
     private final JPanel welcomePanel;
 
@@ -34,6 +35,7 @@ public class MainFrame extends JFrame {
         this.titleLabel = new JLabel("", SwingConstants.CENTER);
         this.subtitleLabel = new JLabel("Internship-ready coding assessments with Java Swing", SwingConstants.CENTER);
         this.versionLabel = new JLabel("", SwingConstants.CENTER);
+        this.loginButton = new JButton("Candidate Login");
         this.registrationButton = new JButton("Open Candidate Registration");
         this.welcomePanel = buildWelcomePanel();
 
@@ -49,6 +51,10 @@ public class MainFrame extends JFrame {
 
     public void onOpenRegistration(ActionListener actionListener) {
         registrationButton.addActionListener(actionListener);
+    }
+
+    public void onOpenLogin(ActionListener actionListener) {
+        loginButton.addActionListener(actionListener);
     }
 
     public void showWelcomePanel() {
@@ -85,6 +91,9 @@ public class MainFrame extends JFrame {
         subtitleLabel.setFont(ApplicationConstants.SUBTITLE_FONT);
         subtitleLabel.setForeground(ApplicationConstants.SECONDARY_TEXT_COLOR);
 
+        loginButton.setAlignmentX(CENTER_ALIGNMENT);
+        loginButton.setFont(ApplicationConstants.LABEL_FONT);
+
         registrationButton.setAlignmentX(CENTER_ALIGNMENT);
         registrationButton.setFont(ApplicationConstants.LABEL_FONT);
 
@@ -97,6 +106,8 @@ public class MainFrame extends JFrame {
         contentPanel.add(Box.createRigidArea(new Dimension(0, 14)));
         contentPanel.add(subtitleLabel);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 28)));
+        contentPanel.add(loginButton);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 12)));
         contentPanel.add(registrationButton);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 18)));
         contentPanel.add(versionLabel);

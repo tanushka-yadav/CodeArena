@@ -57,6 +57,19 @@ public class CandidateRepository {
         return Optional.ofNullable(candidatesByUsername.get(normalizeKey(username)));
     }
 
+    public Optional<Candidate> findByEmailAddress(String emailAddress) {
+        String usernameKey = usernamesByEmail.get(normalizeKey(emailAddress));
+        if (usernameKey == null) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(candidatesByUsername.get(usernameKey));
+    }
+
+    public Optional<Candidate> findByUsernameOrEmail(String usernameOrEmail) {
+        Optional<Candidate> candidate = findByUsername(usernameOrEmail);
+        return candidate.isPresent() ? candidate : findByEmailAddress(usernameOrEmail);
+    }
+
     public List<Candidate> findAll() {
         return new ArrayList<>(candidatesByUsername.values());
     }

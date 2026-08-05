@@ -9,7 +9,6 @@ import java.util.UUID;
 /**
  * Domain model for a registered candidate.
  */
-
 public class Candidate {
 
     private final String candidateId;
@@ -21,13 +20,18 @@ public class Candidate {
     private final LocalDateTime createdAt;
 
     public Candidate(String username, String emailAddress, String passwordHash, CandidateProfile profile) {
-        this.candidateId = UUID.randomUUID().toString();
+        this(UUID.randomUUID().toString(), username, emailAddress, passwordHash, profile, LocalDateTime.now());
+    }
+
+    public Candidate(String candidateId, String username, String emailAddress, String passwordHash,
+                     CandidateProfile profile, LocalDateTime createdAt) {
+        this.candidateId = Objects.requireNonNull(candidateId, "candidateId is required");
         this.username = Objects.requireNonNull(username, "username is required");
         this.emailAddress = Objects.requireNonNull(emailAddress, "emailAddress is required");
         this.passwordHash = Objects.requireNonNull(passwordHash, "passwordHash is required");
         this.profile = Objects.requireNonNull(profile, "profile is required");
         this.role = UserRole.CANDIDATE;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = Objects.requireNonNull(createdAt, "createdAt is required");
     }
 
     public String getCandidateId() {
@@ -77,6 +81,4 @@ public class Candidate {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
-
 }

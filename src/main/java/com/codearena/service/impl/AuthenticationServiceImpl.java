@@ -2,6 +2,7 @@ package com.codearena.service.impl;
 
 import com.codearena.dto.AuthenticationResult;
 import com.codearena.dto.LoginRequest;
+import com.codearena.exception.DatabaseException;
 import com.codearena.interfaces.PasswordEncoder;
 import com.codearena.model.Candidate;
 import com.codearena.repository.CandidateRepository;
@@ -45,6 +46,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .filter(candidate -> passwordMatches(request, candidate))
                     .map(candidate -> startSession(request, candidate))
                     .orElseGet(this::invalidCredentials);
+        } catch (DatabaseException exception) {
+            return AuthenticationResult.failure(
+                    "Login is temporarily unavailable.",
+                    List.of("Unable to verify credentials right now. Please try again later.")
+            );
         } finally {
             if (request != null) {
                 request.clearSensitiveData();

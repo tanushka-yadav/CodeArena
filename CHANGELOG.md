@@ -2,6 +2,15 @@
 
 All notable changes to CodeArena will be documented in this file.
 
+## [0.6.0] - 2026-08-04
+
+### Added
+
+- JDBC/MySQL candidate persistence with automatic candidate table initialization.
+- Centralized database configuration and connection factory.
+- JDBC candidate repository using prepared statements, transactions, duplicate checks, and try-with-resources.
+- MySQL Connector/J Maven dependency.
+
 ## [0.5.0] - 2026-08-04
 
 ### Added

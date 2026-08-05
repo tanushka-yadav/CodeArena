@@ -6,11 +6,10 @@ import java.awt.Font;
 /**
  * Application-wide constants for UI branding and window behavior.
  */
-
 public final class ApplicationConstants {
 
     public static final String APP_NAME = "CodeArena - Coding Test Platform";
-    public static final String APP_VERSION = "0.5.0";
+    public static final String APP_VERSION = "0.6.0";
     public static final int WINDOW_WIDTH = 1100;
     public static final int WINDOW_HEIGHT = 720;
 
@@ -31,5 +30,4 @@ public final class ApplicationConstants {
 
     private ApplicationConstants() {
     }
-
 }

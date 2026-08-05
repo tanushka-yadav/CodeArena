@@ -2,6 +2,7 @@ package com.codearena.service.impl;
 
 import com.codearena.dto.RegistrationRequest;
 import com.codearena.dto.RegistrationResponse;
+import com.codearena.exception.DatabaseException;
 import com.codearena.interfaces.PasswordEncoder;
 import com.codearena.model.Candidate;
 import com.codearena.model.CandidateProfile;
@@ -58,6 +59,11 @@ public class RegistrationServiceImpl implements RegistrationService {
                 );
             }
             return RegistrationResponse.success("Candidate registered successfully.", candidate);
+        } catch (DatabaseException exception) {
+            return RegistrationResponse.failure(
+                    "Registration is temporarily unavailable.",
+                    List.of("Unable to save candidate details right now. Please try again later.")
+            );
         } finally {
             if (request != null) {
                 request.clearSensitiveData();

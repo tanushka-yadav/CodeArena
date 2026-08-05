@@ -5,6 +5,9 @@ import com.codearena.controller.AuthenticationController;
 import com.codearena.controller.DashboardController;
 import com.codearena.controller.NavigationController;
 import com.codearena.controller.RegistrationController;
+import com.codearena.config.DatabaseConfiguration;
+import com.codearena.database.ConnectionFactory;
+import com.codearena.database.DatabaseInitializer;
 import com.codearena.dto.AuthenticationResult;
 import com.codearena.dto.LoginRequest;
 import com.codearena.dto.RegistrationRequest;
@@ -14,6 +17,7 @@ import com.codearena.exception.ApplicationStartupException;
 import com.codearena.interfaces.PasswordEncoder;
 import com.codearena.model.AppInfo;
 import com.codearena.repository.CandidateRepository;
+import com.codearena.repository.JdbcCandidateRepository;
 import com.codearena.service.ApplicationService;
 import com.codearena.service.AuthenticationService;
 import com.codearena.service.DashboardService;
@@ -81,7 +85,7 @@ public final class CodeArenaApplication {
         RegistrationFrame registrationFrame = new RegistrationFrame();
         DashboardPanel dashboardPanel = new DashboardPanel();
         NavigationController navigationController = new NavigationController(mainFrame, loginFrame, registrationFrame);
-        CandidateRepository candidateRepository = new CandidateRepository();
+        CandidateRepository candidateRepository = createCandidateRepository();
         PasswordEncoder passwordEncoder = new Pbkdf2PasswordEncoder();
         SessionManager sessionManager = new SessionManager();
         RegistrationService registrationService = createRegistrationService(candidateRepository, passwordEncoder);
@@ -159,7 +163,7 @@ public final class CodeArenaApplication {
             throw new ApplicationStartupException("CodeArena application metadata is incomplete.");
         }
 
-        CandidateRepository candidateRepository = new CandidateRepository();
+        CandidateRepository candidateRepository = createCandidateRepository();
         PasswordEncoder passwordEncoder = new Pbkdf2PasswordEncoder();
         SessionManager sessionManager = new SessionManager();
         RegistrationService registrationService = createRegistrationService(candidateRepository, passwordEncoder);
@@ -231,5 +235,12 @@ public final class CodeArenaApplication {
         if (!GraphicsEnvironment.isHeadless()) {
             JOptionPane.showMessageDialog(null, userMessage, "Startup Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private static CandidateRepository createCandidateRepository() {
+        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
+        ConnectionFactory connectionFactory = new ConnectionFactory(databaseConfiguration);
+        new DatabaseInitializer(connectionFactory).initialize();
+        return new JdbcCandidateRepository(connectionFactory);
     }
 }
